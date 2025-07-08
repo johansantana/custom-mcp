@@ -1,6 +1,16 @@
-# Domain Checker Remote MCP Server
+# Remote MCP Server Template
 
-A Model Context Protocol (MCP) server that checks domain name availability using WHOIS lookups and DNS resolution. Built with the modern FastMCP framework for easy setup and reliable domain availability checking.
+This is a template for creating **remote MCP servers** that can be deployed to DigitalOcean App Platform. Remote MCP servers allow you to deploy MCP functionality to the cloud and use it from any MCP-compatible client (Claude Desktop, Cursor, Windsurf, etc.) without local installation.
+
+## This Specific Implementation: Domain Checker
+
+This template demonstrates a domain availability checker that uses WHOIS lookups and DNS resolution. Built with the modern FastMCP framework for reliable domain availability checking.
+
+## Quick Start (1-Click Deploy)
+
+1. **Deploy to DigitalOcean** using the button below
+2. **Get your deployed URL** from DigitalOcean (e.g., `https://your-app.ondigitalocean.app`)
+3. **Add to your MCP client** using the URL + `/mcp` endpoint
 
 [![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=domain-checker-remote-mcp&config=eyJ1cmwiOiJodHRwczovL2RvbWFpbi1jaGVja2VyLXJlbW90ZS1tY3AtbGE1aDUub25kaWdpdGFsb2NlYW4uYXBwL21jcCIsImRlc2NyaXB0aW9uIjoiQ2hlY2sgaWYgYSBkb21haW4gaXMgYXZhaWxhYmxlIiwiY29tbWFuZCI6IiJ9)
 
@@ -17,27 +27,24 @@ A Model Context Protocol (MCP) server that checks domain name availability using
 - 📊 **Batch Processing**: Check multiple domains concurrently
 - 🔍 **Detailed Analysis**: Provides comprehensive availability information
 
-## Using the Domain Checker
+## Using Your Remote MCP Server
 
-### Option 1: Use the Remote MCP Server (Easiest)
+### Option 1: Use Your Deployed Remote MCP Server (Recommended)
 
-[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=domain-checker-remote-mcp&config=eyJ1cmwiOiJodHRwczovL2RvbWFpbi1jaGVja2VyLXJlbW90ZS1tY3AtbGE1aDUub25kaWdpdGFsb2NlYW4uYXBwL21jcCIsImRlc2NyaXB0aW9uIjoiQ2hlY2sgaWYgYSBkb21haW4gaXMgYXZhaWxhYmxlIiwiY29tbWFuZCI6IiJ9)
-
-Add the following configuration to your MCP-compatible application:
+After deploying to DigitalOcean, add your server URL to your MCP client:
 
 ```json
 {
   "mcpServers": {
-    "domain-checker-remote-mcp": {
-      "url": "https://domain-checker-remote-mcp-la5h5.ondigitalocean.app/mcp",
-      "description": "Check if a domain is available",
-      "command": ""
+    "domain-checker": {
+      "url": "https://YOUR-APP-NAME.ondigitalocean.app/mcp",
+      "description": "Check domain availability"
     }
   }
 }
 ```
 
-This remote MCP server is already deployed and ready to use!
+Replace `YOUR-APP-NAME` with your actual DigitalOcean app name.
 
 ![Image](https://github.com/user-attachments/assets/34b5228e-2bb8-4fb4-9326-248a62f9519a)
 
