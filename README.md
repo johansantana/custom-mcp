@@ -6,16 +6,16 @@ This is a template for creating **remote MCP servers** that can be deployed to D
 
 This template demonstrates a domain availability checker that uses WHOIS lookups and DNS resolution. Built with the modern FastMCP framework for reliable domain availability checking.
 
+## Deploy this Remote MCP Server to DigitalOcean
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/do-community/do-remote-mcp-server-template/tree/main)
+
 ## Quick Start (1-Click Deploy)
 
-1. **Deploy to DigitalOcean** using the button below
+1. **Deploy to DigitalOcean** using the button above
 2. **Get your deployed URL** from DigitalOcean (e.g., `https://your-app.ondigitalocean.app`)
 3. **Add to your MCP client** using the URL + `/mcp` endpoint
 
 ![Image](https://github.com/user-attachments/assets/d5e7db9e-346d-436b-9c2f-53f014debe17)
-
-## Deploy this Remote MCP Server to DigitalOcean
-[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/do-community/do-remote-mcp-server-template/tree/main)
 
 ## Features
 
