@@ -10,8 +10,6 @@ spec:
       build_command: pip install -r requirements.txt
       run_command: python domain-checker.py
       http_port: 8080
-      health_check:
-        http_path: /mcp
       instance_count: 1
       instance_size_slug: apps-s-1vcpu-0.5gb
       routes:
