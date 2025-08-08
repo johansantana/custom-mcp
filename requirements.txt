@@ -2,3 +2,4 @@ fastmcp
 elevenlabs
 vercel_blob
 python-dotenv
+openai
