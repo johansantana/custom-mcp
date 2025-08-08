@@ -60,8 +60,7 @@ async def use_tts(text: str) -> str:
         # El método `put` de `vercel_blob` toma el nombre del archivo y los bytes del archivo [9].
         # Se usa `multipart=True` para archivos grandes, lo que mejora la resiliencia contra problemas de red [7, 9].
         # El parámetro `verbose=True` mostrará información detallada del progreso durante la subida [7, 9-11].
-        # Nota: El método `put` de `vercel_blob` es asíncrono, por lo tanto, se utiliza `await`.
-        blob_response = await vercel_blob.put(
+        blob_response = vercel_blob.put(
             blob_filename,
             # Se leen todos los bytes del stream de audio.
             audio_bytes_io.read(),
