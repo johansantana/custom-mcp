@@ -2,8 +2,7 @@ import os
 import uuid
 from io import BytesIO
 from dotenv import load_dotenv
-from elevenlabs import VoiceSettings
-from elevenlabs.client import ElevenLabs
+from openai import OpenAI
 # El wrapper de Vercel Blob espera BLOB_READ_WRITE_TOKEN en el entorno [4]
 import vercel_blob
 # Importamos la clase FastMCP para crear el servidor [1]
@@ -12,11 +11,11 @@ from fastmcp import FastMCP
 # Cargar variables de entorno del archivo .env [3]
 load_dotenv()
 
-ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-# Inicializar el cliente de ElevenLabs
+# Inicializar el cliente de OpenAI
 # Es buena práctica inicializar clientes que no cambian por cada llamada fuera de la función del 'tool'.
-elevenlabs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Inicializar el servidor FastMCP con un nombre [1, 5]
 mcp = FastMCP("ElevenLabs TTS con Vercel Blob")
@@ -25,42 +24,28 @@ mcp = FastMCP("ElevenLabs TTS con Vercel Blob")
 @mcp.tool
 async def use_tts(text: str) -> str:
     """
-    Convierte texto a voz usando ElevenLabs, sube el audio a Vercel Blob
+    Convierte texto a voz usando OpenAI TTS, sube el audio a Vercel Blob
     y devuelve la URL del archivo subido.
     """
-    if not ELEVENLABS_API_KEY:
+    if not OPENAI_API_KEY:
         raise ValueError(
-            "La clave API de ElevenLabs (ELEVENLABS_API_KEY) no está configurada. Por favor, revisa tu archivo .env [2, 3].")
+            "La clave API de OpenAI (OPENAI_API_KEY) no está configurada. Por favor, revisa tu archivo .env.")
 
-    # El token BLOB_READ_WRITE_TOKEN debe estar configurado como una variable de entorno [4].
+    # El token BLOB_READ_WRITE_TOKEN debe estar configurado como una variable de entorno.
     # La librería `vercel_blob` lo recoge automáticamente.
 
-    # Paso 1: Convertir texto a voz usando ElevenLabs en modo streaming
-    # Se utiliza la voz predefinida "Adam" (voice_id="pNInz6obpgDQGcFmaJgB") y
-    # el modelo "eleven_turbo_v2_5" para baja latencia [3, 6].
+    # Paso 1: Convertir texto a voz usando OpenAI TTS
+    # Se utiliza el modelo TTS-1 con la voz "alloy"
     try:
-        audio_stream_response = elevenlabs_client.text_to_speech.stream(
-            voice_id="pNInz6obpgDQGcFmaJgB",  # ID de voz predeterminada [3, 6]
-            output_format="mp3_22050_32",  # Formato de salida del audio [3, 6]
-            text=text,
-            # Modelo optimizado para baja latencia [3]
-            model_id="eleven_turbo_v2_5",
-            voice_settings=VoiceSettings(  # Configuraciones opcionales para personalizar la voz [3, 6]
-                stability=0.0,
-                similarity_boost=1.0,
-                style=0.0,
-                use_speaker_boost=True,
-                speed=1.0,
-            ),
+        response = openai_client.audio.speech.create(
+            model="tts-1",
+            voice="nova",  # Una voz femenina clara y profesional
+            input=text
         )
 
-        # Recopilar los chunks del stream de audio en un objeto BytesIO en memoria
-        # para poder leer todos los bytes a la vez para la subida a Vercel Blob [6].
-        audio_bytes_io = BytesIO()
-        for chunk in audio_stream_response:
-            if chunk:
-                audio_bytes_io.write(chunk)
-        # Restablecer la posición del stream al inicio para su lectura [6]
+        # Obtener los bytes del audio
+        audio_bytes_io = BytesIO(response.content)
+        # Restablecer la posición del stream al inicio para su lectura
         audio_bytes_io.seek(0)
 
     except Exception as e:
