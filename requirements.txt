@@ -3,3 +3,4 @@ elevenlabs
 vercel_blob
 python-dotenv
 openai
+tavily-python

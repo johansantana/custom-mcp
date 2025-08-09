@@ -3,10 +3,10 @@ import uuid
 from io import BytesIO
 from dotenv import load_dotenv
 from openai import OpenAI
-# El wrapper de Vercel Blob espera BLOB_READ_WRITE_TOKEN en el entorno [4]
 import vercel_blob
-# Importamos la clase FastMCP para crear el servidor [1]
 from fastmcp import FastMCP
+from tavily import TavilyClient
+
 
 # Cargar variables de entorno del archivo .env [3]
 load_dotenv()
@@ -18,7 +18,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 # Inicializar el servidor FastMCP con un nombre [1, 5]
-mcp = FastMCP("ElevenLabs TTS con Vercel Blob")
+mcp = FastMCP("Servidor MCP personalizado para PolyAI")
 
 
 @mcp.tool
@@ -75,6 +75,29 @@ async def use_tts(text: str, instructions: str = "Read this clearly and professi
     except Exception as e:
         print(f"Error al subir el audio a Vercel Blob: {e}")
         raise ValueError(f"No se pudo subir el archivo a Vercel Blob: {e}")
+
+
+@mcp.tool
+async def internet_search(query: str) -> dict:
+    """
+    Realiza una búsqueda en Internet usando la API de Tavily
+    y devuelve los resultados encontrados.
+    Parámetros:
+      query: El texto de búsqueda.
+    """
+    tavily_api_key = os.getenv("TAVILY_API_KEY")
+    if not tavily_api_key:
+        raise ValueError(
+            "La clave API de Tavily (TAVILY_API_KEY) no está configurada. Por favor, revisa tu archivo .env.")
+
+    try:
+        client = TavilyClient(tavily_api_key)
+        response = client.search(query=query)
+        return response
+    except Exception as e:
+        print(f"Error al realizar la búsqueda con Tavily: {e}")
+        raise ValueError(f"No se pudo completar la búsqueda: {e}")
+
 
 # Ejecutar el servidor FastMCP utilizando el transporte Streamable HTTP [13, 14].
 # El host '0.0.0.0' permite que el servidor sea accesible desde cualquier interfaz de red,
