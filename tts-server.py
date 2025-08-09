@@ -28,7 +28,7 @@ async def use_tts(text: str, instructions: str = "Read this clearly and professi
     y devuelve la URL del archivo subido.
     Parámetros:
       text: El texto a convertir.
-      instructions: Instrucciones para la entonación o la velocidad del texto. Por defecto: "Read this clearly and professionally".
+      instructions: Instrucciones para controlar el acento, el tono, la impresión, la gama emocional, la entonación, las impresiones, la velocidad del habla, el tono y los susurros. Por defecto: "Read this clearly and professionally".
     """
     if not OPENAI_API_KEY:
         raise ValueError(
@@ -40,7 +40,7 @@ async def use_tts(text: str, instructions: str = "Read this clearly and professi
     try:
         response = openai_client.audio.speech.create(
             model="gpt-4o-mini-tts",
-            voice="coral",  # Una voz femenina clara y profesional
+            voice="nova",  # Una voz femenina clara y profesional
             input=text,
             instructions=instructions
         )
