@@ -40,7 +40,7 @@ async def use_tts(text: str, instructions: str = "Read this clearly and professi
     try:
         response = openai_client.audio.speech.create(
             model="gpt-4o-mini-tts",
-            voice="ash",  # Una voz femenina clara y profesional
+            voice="nova",  # Una voz femenina clara y profesional
             input=text,
             instructions=instructions
         )
