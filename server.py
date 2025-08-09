@@ -93,6 +93,21 @@ async def internet_search(query: str) -> dict:
     try:
         client = TavilyClient(tavily_api_key)
         response = client.search(query=query)
+
+        # Filtrar resultados por score
+        high_quality_results = [
+            r for r in response["results"] if r["score"] >= 0.9]
+        good_quality_results = [
+            r for r in response["results"] if r["score"] >= 0.8]
+
+        if high_quality_results:
+            # Si hay resultados con score >= 0.9, solo devolver esos
+            response["results"] = high_quality_results
+        elif good_quality_results:
+            # Si no hay resultados >= 0.9 pero hay >= 0.8, devolver esos
+            response["results"] = good_quality_results
+        # Si no hay ninguno que cumpla los criterios, se mantienen todos los resultados originales
+
         return response
     except Exception as e:
         print(f"Error al realizar la búsqueda con Tavily: {e}")
