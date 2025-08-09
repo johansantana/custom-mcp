@@ -22,10 +22,13 @@ mcp = FastMCP("ElevenLabs TTS con Vercel Blob")
 
 
 @mcp.tool
-async def use_tts(text: str) -> str:
+async def use_tts(text: str, instructions: str = "Read this clearly and professionally") -> str:
     """
     Convierte texto a voz usando OpenAI TTS, sube el audio a Vercel Blob
     y devuelve la URL del archivo subido.
+    Parámetros:
+      text: El texto a convertir.
+      instructions: Instrucciones para la entonación o la velocidad del texto. Por defecto: "Read this clearly and professionally".
     """
     if not OPENAI_API_KEY:
         raise ValueError(
@@ -34,13 +37,12 @@ async def use_tts(text: str) -> str:
     # El token BLOB_READ_WRITE_TOKEN debe estar configurado como una variable de entorno.
     # La librería `vercel_blob` lo recoge automáticamente.
 
-    # Paso 1: Convertir texto a voz usando OpenAI TTS
-    # Se utiliza el modelo TTS-1 con la voz "alloy"
     try:
         response = openai_client.audio.speech.create(
-            model="tts-1",
-            voice="nova",  # Una voz femenina clara y profesional
-            input=text
+            model="gpt-4o-mini-tts",
+            voice="ash",  # Una voz femenina clara y profesional
+            input=text,
+            instructions=instructions
         )
 
         # Obtener los bytes del audio
