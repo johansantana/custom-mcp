@@ -226,9 +226,11 @@ def handle_place_search(mode: str, query: str, limit: int = 1, user_location: di
             raise ValueError(
                 "user_location is required for search_nearby mode.")
 
-        url = "https://api.foursquare.com/v3/places/search"
+        url = "https://places-api.foursquare.com/places/search"
         headers = {
-            "Authorization": f"Bearer {os.environ.get('FSQ_API_KEY')}"
+            "accept": "application/json",
+            "X-Places-Api-Version": "2025-06-17",
+            "authorization": f"Bearer {os.environ.get('FSQ_API_KEY')}"
         }
         params = {
             "query": query,
