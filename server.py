@@ -173,9 +173,9 @@ def fetch_landmark(place_name: str, limit: int):
     # 'types' is set to 'poi' to specifically filter for Points of Interest.
     params = {
         "q": place_name,
-        "access_token": os.environ.get("MAPBOX_KEY"),
+        "access_token": os.environ.get("MAPBOX_API_KEY"),
         "limit": limit,
-        "types": "poi"
+        "types": "poi",  # Generate a new session token for each request
     }
 
     res = requests.get(url, params=params)
