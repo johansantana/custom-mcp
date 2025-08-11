@@ -245,11 +245,17 @@ def handle_place_search(mode: str, query: str, limit: int = 1, user_location: di
         return [
             {
                 "name": place.get("name"),
-                "lat": place.get("geocodes", {}).get("main", {}).get("latitude"),
-                "lon": place.get("geocodes", {}).get("main", {}).get("longitude"),
+                "lat": place.get("latitude"),
+                "lon": place.get("longitude"),
                 "address": place.get("location", {}).get("formatted_address"),
                 "category": place.get("categories", [{}])[0].get("name") if place.get("categories") else None,
-                "rating": None  # Not included in free tier
+                "rating": None,  # Not included in the API response
+                # Adding distance from the query point
+                "distance": place.get("distance"),
+                # Adding the Foursquare place ID
+                "fsq_id": place.get("fsq_place_id"),
+                "website": place.get("website"),  # Adding website if available
+                "phone": place.get("tel")  # Adding phone number if available
             }
             for place in data.get("results", [])
         ]
