@@ -18,49 +18,6 @@ load_dotenv()
 mcp = FastMCP("Servidor MCP personalizado para PolyAI")
 
 
-@mcp.tool
-def get_ip_info(ip_address: str):
-    """
-    Obtiene información de geolocalización para una dirección IP dada.
-
-    Args:
-        ip_address: La dirección IP (por ejemplo, "200.88.161.230") a buscar.
-
-    Returns:
-        Un diccionario que contiene los datos de geolocalización si la solicitud es exitosa.
-        Devuelve None si ocurre un error (por ejemplo, problema de red o IP no válida).
-    """
-    # Construct the full API URL for the specified IP address.
-    url = f"http://ip-api.com/json/{ip_address}"
-
-    try:
-        # Send an HTTP GET request to the API endpoint.
-        response = requests.get(url)
-
-        # Raise an exception for bad status codes (4xx or 5xx).
-        # This will catch errors like "Not Found" or "Internal Server Error".
-        response.raise_for_status()
-
-        # Parse the JSON response into a Python dictionary.
-        data = response.json()
-
-        # Check if the API itself reported a failure.
-        if data.get("status") == "fail":
-            print(f"Error from API for IP {ip_address}: {data.get('message')}")
-            return None
-
-        return data
-
-    except requests.exceptions.HTTPError as http_err:
-        # Handle HTTP errors (e.g., 404, 503).
-        print(f"HTTP error occurred: {http_err}")
-        return None
-    except requests.exceptions.RequestException as req_err:
-        # Handle other request-related errors (e.g., network connection issues).
-        print(f"An error occurred: {req_err}")
-        return None
-
-
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Inicializar el cliente de OpenAI
@@ -213,18 +170,18 @@ def fetch_landmark(place_name: str, limit: int):
 
 
 @mcp.tool
-def handle_place_search(mode: str, query: str, limit: int = 1, user_location: dict = None):
+def handle_place_search(mode: str, query: str, limit: int = 1, location: dict = None):
     """
     mode: "search_nearby" | "search_landmark" Esto lo eligirás dependiendo qué tipo de solicitud está haciendo el cliente
     limit: Número de resultados a devolver por lugar
     query: cadena de búsqueda (puede contener múltiples nombres de lugares para el modo de punto de referencia). Ejemplo: "Torre Eiffel, Museo del Louvre"
-    user_location: {"lat": float, "lon": float} (requerido para search_nearby)
+    location: {"lat": float, "lon": float} (requerido para search_nearby)
     """
 
     if mode == "search_nearby":
-        if not user_location:
+        if not location:
             raise ValueError(
-                "user_location is required for search_nearby mode.")
+                "location is required for search_nearby mode.")
 
         url = "https://places-api.foursquare.com/places/search"
         headers = {
@@ -234,7 +191,7 @@ def handle_place_search(mode: str, query: str, limit: int = 1, user_location: di
         }
         params = {
             "query": query,
-            "ll": f"{user_location['lat']},{user_location['lon']}",
+            "ll": f"{location['lat']},{location['lon']}",
             "limit": limit
         }
 
